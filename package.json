@@ -9,6 +9,7 @@
     "seed": "ts-node ./prisma/seed.ts"
   },
   "dependencies": {
+    "@elysiajs/swagger": "^1.2.0",
     "elysia": "latest"
   },
   "devDependencies": {
