@@ -1,9 +1,12 @@
 import { Elysia } from "elysia";
-import { serverRoutes } from "./route/routes";
+
+import swagger from "@elysiajs/swagger";
+import postsRoutes from "./route/routes";
 
 const app = new Elysia();
 
-app.group("/api", (app) => app.use(serverRoutes));
+app.use(swagger());
+app.group("/api", (app) => app.use(postsRoutes));
 app.listen(process.env.PORT || 3500);
 
 console.log(
