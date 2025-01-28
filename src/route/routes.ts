@@ -1,15 +1,59 @@
 import { Elysia, t } from "elysia";
-import { getAllpost, getBookId } from "./handler/handler";
+import {
+  addBook,
+  deleteBook,
+  getAllBook,
+  getBookId,
+  patchBook,
+} from "./handler/handler";
 
-const serverRoutes = new Elysia({ prefix: "/books" })
-  .get("/", getAllpost)
+const postsRoutes = new Elysia({ prefix: "/posts" })
+  .get("/", () => getAllBook())
   .get("/:id", ({ params: { id } }) => getBookId(id), {
     params: t.Object({
       id: t.Numeric(),
     }),
   })
-  .post("/", () => "create post")
-  .patch("/:id", () => "update post")
-  .delete("/", () => "delete post");
+  .post("/", ({ body }) => addBook(body), {
+    body: t.Object({
+      title: t.String({
+        minLength: 3,
+        maxLength: 50,
+      }),
+      content: t.String({
+        minLength: 3,
+        maxLength: 50,
+      }),
+    }),
+  })
+  .patch("/:id", ({ params: { id }, body }) => patchBook(id, body), {
+    params: t.Object({
+      id: t.Numeric(),
+    }),
+    body: t.Object(
+      {
+        title: t.Optional(
+          t.String({
+            minLength: 3,
+            maxLength: 50,
+          })
+        ),
+        content: t.Optional(
+          t.String({
+            minLength: 3,
+            maxLength: 50,
+          })
+        ),
+      },
+      {
+        minProperties: 1,
+      }
+    ),
+  })
+  .delete("/", ({ body }) => deleteBook(body), {
+    body: t.Object({
+      id: t.Numeric(),
+    }),
+  });
 
-export { serverRoutes };
+export default postsRoutes;
